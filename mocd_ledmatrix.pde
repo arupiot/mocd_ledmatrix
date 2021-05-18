@@ -1,11 +1,15 @@
 /**
  * MOCD matrix 
  */
+ 
+import processing.sound.*;
 
 int pixelSize=2;
 PGraphics pg;
 PImage matrixImage;
-boolean showMatrix = true;
+boolean showMatrix = false;
+String audioFileName = "BW_MoCD_Room_Ambience.mp3";
+SoundFile soundfile;
 
 void setup(){
   size(918, 120);
@@ -15,13 +19,15 @@ void setup(){
   pg = createGraphics(918, 120);
   colorMode(RGB);
   noSmooth();
+  soundfile = new SoundFile(this, audioFileName);
+  soundfile.loop();
 }
 
 void draw()
 {
-  float  xc = 1000;
+  float  xc = 2000;
 
-  int timeDisplacement = frameCount;
+  int timeDisplacement = int(frameCount*.5);
 
   // No need to do this math for every pixel
   float calculation1 = sin( radians(timeDisplacement * 0.06));
@@ -34,18 +40,20 @@ void draw()
   // Plasma algorithm
   for (int x = 0; x < pg.width; x++, xc += pixelSize)
   {
-    float  yc    = 1000;
+    float  yc    = 2000;
     float s1 = 128 + 128 * sin(radians(xc) * calculation1 );
 
     for (int y = 0; y < pg.height; y++, yc += pixelSize)
     {
       float s2 = 128 + 128 * sin(radians(yc) * calculation2 );
       float s3 = 128 + 128 * sin(radians((xc + yc + timeDisplacement * 5) / 2));  
-      //float s  = (s1+ s2 + s3) / 3;
-      float s = s2;
+      float s  = (s1+ s2 + s3) / 3;
+      //float s = s2;
       //pg.pixels[x+y*pg.width] = color(s, 255 - s / 2.0, 255);
-      //pg.pixels[x+y*pg.width] = color(s, 255 - s / 2.0, 255);
-      pg.pixels[x+y*pg.width] = color(s, 0, 255);
+      pg.pixels[x+y*pg.width] = color(s, 255 - s / 2.0, 255);
+      //pg.pixels[x+y*pg.width] = color(s, 100, 255);
+      //pg.pixels[x+y*pg.width] = color(s, 100, 255);
+      //pg.pixels[x+y*pg.width] = color(s, 000, 255);
     }
   }   
   pg.updatePixels();
