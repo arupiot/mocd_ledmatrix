@@ -5,11 +5,17 @@
 import processing.sound.*;
 
 int pixelSize=2;
+int x = 100;
+int h = 20;
+int w = 5;
 PGraphics pg;
 PImage matrixImage;
+PFont f;
 boolean showMatrix = false;
 String audioFileName = "BW_MoCD_Room_Ambience.mp3";
 SoundFile soundfile;
+boolean showRects = true;
+boolean showTestRect = false;
 
 void setup(){
   size(918, 120);
@@ -21,6 +27,9 @@ void setup(){
   noSmooth();
   soundfile = new SoundFile(this, audioFileName);
   soundfile.loop();
+  f = createFont("SourceCodePro-Regular.ttf", 24);
+  textFont(f);
+  textAlign(CENTER, CENTER);
 }
 
 void draw()
@@ -68,12 +77,52 @@ void draw()
      tint(255, 127);  // Display at half opacity
   }
 
+  color(0,0,0,255);  
+  fill(0,0,0,255);
+  if (showTestRect) {
+    rect(x,height-h,w,h);  
+    text(str(x)+"-"+str(h)+"-"+str(w), width/2, height/2);
+  }
+  if (showRects) {
+    //89 44 3
+    rect(89,height-44,3,44);
+    //257 44 3
+    rect(257,height-44,3,44);
+    //398 44 3
+    rect(398,height-44,3,44);
+    //679 44 3
+    rect(679,height-44,3,44);
+  }
 }
 
 void keyReleased() {
   // save image
   if (key=='s' || key=='S') saveFrame(timestamp()+".png"); 
   if (key=='m' || key=='M') showMatrix = !showMatrix; 
+}
+
+void keyPressed() {
+  if (key=='r' || key=='R') showRects=!showRects;
+  if (key=='t' || key=='T') showTestRect=!showTestRect;
+  if (key=='w' || key=='W') w=w+1;
+  if (key=='x' || key=='X') w=w-1;
+  if (w<=1) w=1;
+  if (key == CODED) {
+      if (keyCode == UP) {
+        h+=1;
+        if (h>height) h=height;
+      } else if (keyCode == DOWN) {
+        h-=1;
+        if (h<0) h=0;
+      } else if (keyCode == RIGHT) {
+        x+=1;
+        if (x>width) x = 0;
+      }
+      else if (keyCode == LEFT) {
+        x-=1;
+        if (x<0) x = width;
+      }
+  }
 }
 
 String timestamp() {
